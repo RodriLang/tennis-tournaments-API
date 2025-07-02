@@ -1,11 +1,12 @@
-package dev.rodrilang.tennis_tournaments.service;
+package dev.rodrilang.tennis_tournaments.services;
 
 
-import dev.rodrilang.tennis_tournaments.dtos.requests.ResultRequestDto;
-import dev.rodrilang.tennis_tournaments.dtos.requests.TournamentRequestDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.PlayerResponseDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.TournamentResponseDto;
-import dev.rodrilang.tennis_tournaments.entities.Tournament;
+import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.request.TournamentRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.TournamentResponseDto;
+import dev.rodrilang.tennis_tournaments.models.Tournament;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface TournamentService {
 
         void delete(Long id);
 
-        List<Tournament> getAll();
+        List<TournamentResponseDto> getAll();
 
         void registerPlayerInTournament(Long tournamentId, String playerDni);
 
@@ -31,8 +32,12 @@ public interface TournamentService {
 
         void modifyResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto);
 
-        void advanceTournament(Long tournamentId);
+        void startTournament(Long tournamentId);
 
         PlayerResponseDto getTournamentWinner(Long tournamentId);
+
+        List<RoundResponseDto> getRoundsOfTournament(Long tournamentId);
+
+        List<PlayerResponseDto> getTournamentPlayers(Long tournamentId);
 
 }

@@ -1,9 +1,9 @@
-package dev.rodrilang.tennis_tournaments.service.impl;
+package dev.rodrilang.tennis_tournaments.services.impl;
 
-import dev.rodrilang.tennis_tournaments.entities.SetScore;
+import dev.rodrilang.tennis_tournaments.models.SetScore;
 import dev.rodrilang.tennis_tournaments.exceptions.InvalidResultException;
 import org.springframework.stereotype.Service;
-import dev.rodrilang.tennis_tournaments.service.SetScoreValidator;
+import dev.rodrilang.tennis_tournaments.services.SetScoreValidator;
 import dev.rodrilang.tennis_tournaments.utils.Utils;
 
 @Service
@@ -21,7 +21,7 @@ public class SetScoreValidatorImpl implements SetScoreValidator {
 
     @Override
     public void validateSetScore(SetScore score) throws InvalidResultException {
-        if (!isValidSetScore(score.getPlayerOneScore(), score.getPlayerTwoScore())) {
+        if (Boolean.FALSE.equals(isValidSetScore(score.getPlayerOneScore(), score.getPlayerTwoScore()))) {
             throw new InvalidResultException("Invalid set score.");
         }
     }

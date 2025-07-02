@@ -1,8 +1,8 @@
-package dev.rodrilang.tennis_tournaments.service;
+package dev.rodrilang.tennis_tournaments.services;
 
-import dev.rodrilang.tennis_tournaments.dtos.requests.PlayerRequestDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.PlayerResponseDto;
-import dev.rodrilang.tennis_tournaments.entities.Player;
+import dev.rodrilang.tennis_tournaments.dtos.request.PlayerRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.models.Player;
 
 import java.util.List;
 
@@ -34,5 +34,7 @@ public interface PlayerService {
 
     // Ver ranking por puntos
     List<PlayerResponseDto> getPlayersOrderedByPoints();
+
+    List<PlayerResponseDto> getPlayersByTournamentId(Long tournamentId);
 
 }

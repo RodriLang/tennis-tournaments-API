@@ -1,6 +1,6 @@
-package dev.rodrilang.tennis_tournaments.service;
+package dev.rodrilang.tennis_tournaments.services;
 
-import dev.rodrilang.tennis_tournaments.entities.SetScore;
+import dev.rodrilang.tennis_tournaments.models.SetScore;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,22 +1,21 @@
-package dev.rodrilang.tennis_tournaments.service;
+package dev.rodrilang.tennis_tournaments.services;
 
-import dev.rodrilang.tennis_tournaments.dtos.responses.MatchResponseDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.PlayerResponseDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.RoundResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
+import dev.rodrilang.tennis_tournaments.enums.RoundType;
+import dev.rodrilang.tennis_tournaments.models.Tournament;
+import dev.rodrilang.tennis_tournaments.models.Round;
 
 import java.util.List;
 
 public interface RoundService {
 
-    Boolean isCurrentRoundComplete();
+    List<PlayerResponseDto> getPlayersStillCompeting(Tournament tournament);
 
-    List<PlayerResponseDto> getPlayersStillCompeting();
+    Round generateRound(Tournament tournament, RoundType roundType);
 
-    void nextRound();
+    List<RoundResponseDto> getRoundsByTournament(Tournament tournament);
 
-    RoundResponseDto generateNextRound();
-
-    RoundResponseDto getCurrentRound();
-
-    MatchResponseDto getFinalMatch();
+    MatchResponseDto getFinalMatch(Tournament tournament);
 }

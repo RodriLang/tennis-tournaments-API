@@ -1,9 +1,9 @@
-package dev.rodrilang.tennis_tournaments.service;
+package dev.rodrilang.tennis_tournaments.services;
 
-import dev.rodrilang.tennis_tournaments.dtos.requests.ResultRequestDto;
-import dev.rodrilang.tennis_tournaments.entities.Match;
-import dev.rodrilang.tennis_tournaments.entities.Player;
-import dev.rodrilang.tennis_tournaments.dtos.responses.MatchResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
+import dev.rodrilang.tennis_tournaments.models.Match;
+import dev.rodrilang.tennis_tournaments.models.Player;
+import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
 
 import java.util.List;
 
@@ -29,8 +29,5 @@ public interface MatchService {
 
     // Verificar si un partido tiene resultado válido o terminado
     Boolean isFinished(Match match);
-
-
-
 
 }

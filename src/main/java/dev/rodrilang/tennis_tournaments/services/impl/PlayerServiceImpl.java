@@ -1,17 +1,17 @@
-package dev.rodrilang.tennis_tournaments.service.impl;
+package dev.rodrilang.tennis_tournaments.services.impl;
 
 
-import dev.rodrilang.tennis_tournaments.dtos.requests.PlayerRequestDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.PlayerResponseDto;
-import dev.rodrilang.tennis_tournaments.entities.Player;
+import dev.rodrilang.tennis_tournaments.dtos.request.PlayerRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.models.Player;
 import dev.rodrilang.tennis_tournaments.exceptions.DeletedPlayerException;
 import dev.rodrilang.tennis_tournaments.exceptions.DuplicatePlayerException;
 import dev.rodrilang.tennis_tournaments.exceptions.PlayerNotFoundException;
 import dev.rodrilang.tennis_tournaments.mappers.PlayerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import dev.rodrilang.tennis_tournaments.repository.PlayerRepository;
-import dev.rodrilang.tennis_tournaments.service.PlayerService;
+import dev.rodrilang.tennis_tournaments.repositories.PlayerRepository;
+import dev.rodrilang.tennis_tournaments.services.PlayerService;
 
 import java.util.List;
 
@@ -97,6 +97,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<PlayerResponseDto> getPlayersOrderedByPoints() {
+        return List.of();
+    }
+
+    @Override
+    public List<PlayerResponseDto> getPlayersByTournamentId(Long tournamentId) {
         return List.of();
     }
 
