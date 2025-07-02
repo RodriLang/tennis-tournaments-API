@@ -1,4 +1,4 @@
-package dev.rodrilang.tennis_tournaments.dtos.responses;
+package dev.rodrilang.tennis_tournaments.dtos.response;
 
 public record MatchResponseDto (
 

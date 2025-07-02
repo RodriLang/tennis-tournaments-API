@@ -1,4 +1,10 @@
-package dev.rodrilang.tennis_tournaments.dtos.responses;
+package dev.rodrilang.tennis_tournaments.dtos.response;
 
-public record RoundResponseDto() {
+import java.util.List;
+
+public record RoundResponseDto(
+
+        List<MatchResponseDto> matches
+) {
+
 }

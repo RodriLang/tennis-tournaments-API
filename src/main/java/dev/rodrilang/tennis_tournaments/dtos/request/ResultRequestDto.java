@@ -1,4 +1,4 @@
-package dev.rodrilang.tennis_tournaments.dtos.requests;
+package dev.rodrilang.tennis_tournaments.dtos.request;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

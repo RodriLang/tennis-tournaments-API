@@ -1,4 +1,8 @@
 package dev.rodrilang.tennis_tournaments.dtos;
 
-public class SetScoreDto {
+public record SetScoreDto (
+
+        Integer playerOneScore,
+        Integer playerTwoScore
+){
 }
