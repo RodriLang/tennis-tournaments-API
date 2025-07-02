@@ -1,6 +1,6 @@
-package dev.rodrilang.tennis_tournaments.repository;
+package dev.rodrilang.tennis_tournaments.repositories;
 
-import dev.rodrilang.tennis_tournaments.entities.Credential;
+import dev.rodrilang.tennis_tournaments.models.Credential;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
-package dev.rodrilang.tennis_tournaments.repository;
+package dev.rodrilang.tennis_tournaments.repositories;
 
-import dev.rodrilang.tennis_tournaments.entities.Player;
+import dev.rodrilang.tennis_tournaments.models.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
