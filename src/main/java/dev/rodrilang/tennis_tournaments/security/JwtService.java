@@ -1,87 +1,64 @@
-package com.group_three.food_ordering.security;
+package dev.rodrilang.tennis_tournaments.security;
 
+import dev.rodrilang.tennis_tournaments.models.Credential;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
 
 @Component
 public class JwtService {
 
-    @Value("${jwt.secret:myDefaultSecretKeyForJWTTokenGenerationThatShouldBeLongEnoughForSecurity}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expirationMs:86400000}")
-    private long jwtExpirationMs;
+    @Value("${jwt.expiration}")
+    private long expirationMs;
 
-    public String generateToken(String email,
-                                UUID foodVenueId,
-                                String role,
-                                UUID tableSessionId,
-                                UUID clientId) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("foodVenueId", foodVenueId);
-        claims.put("tableSessionId", tableSessionId);
-        claims.put("clientId", clientId);
-        claims.put("role", role);
-
+    public String generateToken(Credential credential) {
         return Jwts.builder()
-                .subject(email)
-                .claims(claims)
+                .subject(credential.getUsername())
+                .claim("role", credential.getRole())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .expiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(getSignatureKey())
                 .compact();
     }
 
-    // Validate access token
-    public Boolean isTokenValid(String token) {
+    public Boolean isValidToken(String token, UserDetails userDetails) {
         try {
-            Jwts.parser()
-                    .verifyWith(getSignatureKey())
-                    .build()
-                    .parseSignedClaims(token);
-            return true;
+            String usernameFromToken = extractUsername(token);
+            return usernameFromToken.equals(userDetails.getUsername()) &&
+                    !isTokenExpired(token);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
 
-    // Alternative validation method (same functionality, different name)
-    public boolean validateToken(String token) {
-        return isTokenValid(token);
+
+    private SecretKey getSignatureKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // Check if token is expired
-    public Boolean isTokenExpired(String token) {
-        Date expiration = getClaim(token, Claims::getExpiration);
+    public boolean isTokenExpired(String token) {
+        Date expiration = extractAllClaims(token).getExpiration();
         return expiration.before(new Date());
     }
 
-    // Obtain username from token
-    public String getUsernameFromToken(String token) {
-        return getClaim(token, Claims::getSubject);
+
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject(); // El "sub" del JWT es el username
     }
 
-    // Obtain one specific claim
-    public <T> T getClaim(String token, Function<Claims, T> claimsTFunction) {
-        Claims claims = extractAllClaims(token);
-        return claimsTFunction.apply(claims);
-    }
-
-    // Obtain all claims
-    public Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSignatureKey())
                 .build()
@@ -89,29 +66,4 @@ public class JwtService {
                 .getPayload();
     }
 
-    public String getFoodVenueId(String token) {
-        return getClaim(token, claims -> claims.get("foodVenueId", String.class));
-    }
-
-    // Alternative method for getting claims (same functionality)
-    private Claims getClaims(String token) {
-        return extractAllClaims(token);
-    }
-
-    // Obtain signature key
-    private SecretKey getSignatureKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    // Get token expiration time
-    public Date getExpirationDateFromToken(String token) {
-        return getClaim(token, Claims::getExpiration);
-    }
-
-    // Get token issued date
-    public Date getIssuedAtDateFromToken(String token) {
-        return getClaim(token, Claims::getIssuedAt);
-    }
 }
-
