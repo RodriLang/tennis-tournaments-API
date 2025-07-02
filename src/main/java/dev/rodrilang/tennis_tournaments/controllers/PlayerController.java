@@ -1,8 +1,8 @@
 package dev.rodrilang.tennis_tournaments.controllers;
 
-import dev.rodrilang.tennis_tournaments.dtos.requests.PlayerRequestDto;
-import dev.rodrilang.tennis_tournaments.dtos.responses.PlayerResponseDto;
-import dev.rodrilang.tennis_tournaments.service.PlayerService;
+import dev.rodrilang.tennis_tournaments.dtos.request.PlayerRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.services.PlayerService;
 import dev.rodrilang.tennis_tournaments.validations.OnCreate;
 import dev.rodrilang.tennis_tournaments.validations.OnUpdate;
 import lombok.RequiredArgsConstructor;
