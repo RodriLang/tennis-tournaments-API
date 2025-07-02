@@ -1,4 +1,4 @@
-package dev.rodrilang.tennis_tournaments.entities;
+package dev.rodrilang.tennis_tournaments.models;
 
 import dev.rodrilang.tennis_tournaments.enums.RoleType;
 import jakarta.persistence.*;

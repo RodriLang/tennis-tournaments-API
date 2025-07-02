@@ -1,10 +1,9 @@
-package dev.rodrilang.tennis_tournaments.entities;
+package dev.rodrilang.tennis_tournaments.models;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

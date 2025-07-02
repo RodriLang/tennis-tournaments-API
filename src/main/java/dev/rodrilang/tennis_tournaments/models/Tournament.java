@@ -1,8 +1,7 @@
-package dev.rodrilang.tennis_tournaments.entities;
+package dev.rodrilang.tennis_tournaments.models;
 
-import dev.rodrilang.tennis_tournaments.entities.rounds.Round;
+import dev.rodrilang.tennis_tournaments.enums.StatusType;
 import dev.rodrilang.tennis_tournaments.enums.SurfaceType;
-import dev.rodrilang.tennis_tournaments.enums.TournamentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +36,7 @@ public class Tournament implements Comparable<Tournament> {
     private LocalDate endingDate;
 
     @Enumerated(EnumType.STRING)
-    private TournamentStatus status = TournamentStatus.NOT_STARTED;
+    private StatusType status;
 
     @ManyToMany
     @JoinTable(
@@ -49,6 +48,11 @@ public class Tournament implements Comparable<Tournament> {
 
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Round> rounds = new ArrayList<>();
+
+    @PrePersist
+    public void onCreate() {
+        if(this.status == null) this.status = StatusType.NOT_STARTED;
+    }
 
     @Override
     public int compareTo(Tournament o) {

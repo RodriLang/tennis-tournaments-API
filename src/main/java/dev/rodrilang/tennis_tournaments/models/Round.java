@@ -1,8 +1,6 @@
-package dev.rodrilang.tennis_tournaments.models.rounds;
+package dev.rodrilang.tennis_tournaments.models;
 
 import dev.rodrilang.tennis_tournaments.enums.RoundType;
-import dev.rodrilang.tennis_tournaments.models.Match;
-import dev.rodrilang.tennis_tournaments.models.Tournament;
 import jakarta.persistence.*;
 import lombok.*;
 

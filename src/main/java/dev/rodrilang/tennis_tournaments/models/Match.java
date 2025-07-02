@@ -1,5 +1,6 @@
-package dev.rodrilang.tennis_tournaments.entities;
+package dev.rodrilang.tennis_tournaments.models;
 
+import dev.rodrilang.tennis_tournaments.enums.StatusType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,14 @@ public class Match implements Comparable<Match> {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "result_id")
     private Result result;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType status;
+
+    @ManyToOne
+    @JoinColumn(name = "round_id", nullable = false)
+    private Round round;
+
 
     @Override
     public int compareTo(@NonNull Match o) {
