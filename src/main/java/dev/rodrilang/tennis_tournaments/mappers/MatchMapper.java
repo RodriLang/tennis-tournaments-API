@@ -1,7 +1,7 @@
 package dev.rodrilang.tennis_tournaments.mappers;
 
-import dev.rodrilang.tennis_tournaments.dtos.responses.MatchResponseDto;
-import dev.rodrilang.tennis_tournaments.entities.Match;
+import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
+import dev.rodrilang.tennis_tournaments.models.Match;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
