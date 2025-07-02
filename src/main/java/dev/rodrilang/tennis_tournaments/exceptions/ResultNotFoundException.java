@@ -1,12 +1,12 @@
 package dev.rodrilang.tennis_tournaments.exceptions;
 
-public class MatchNotFoundException extends EntityNotFoundException {
+public class ResultNotFoundException extends EntityNotFoundException {
 
-    public MatchNotFoundException(Long id) {
-        super("No match was found with the given ID: " + id);
+    public ResultNotFoundException(Long id) {
+        super("No result was found with the given ID: " + id);
     }
 
-    public MatchNotFoundException(String message) {
+    public ResultNotFoundException(String message) {
         super(message);
     }
 }
