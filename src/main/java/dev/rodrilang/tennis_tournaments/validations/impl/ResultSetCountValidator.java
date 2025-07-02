@@ -1,6 +1,6 @@
 package dev.rodrilang.tennis_tournaments.validations.impl;
 
-import dev.rodrilang.tennis_tournaments.dtos.requests.ResultRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import dev.rodrilang.tennis_tournaments.validations.ValidResultSetCount;
