@@ -1,7 +1,7 @@
 package dev.rodrilang.tennis_tournaments.strategies;
 
-import dev.rodrilang.tennis_tournaments.entities.Match;
-import dev.rodrilang.tennis_tournaments.entities.Player;
+import dev.rodrilang.tennis_tournaments.models.Match;
+import dev.rodrilang.tennis_tournaments.models.Player;
 
 import java.util.List;
 

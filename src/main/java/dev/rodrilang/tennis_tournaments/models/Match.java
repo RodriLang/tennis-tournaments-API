@@ -28,7 +28,7 @@ public class Match implements Comparable<Match> {
     private Result result;
 
     @Override
-    public int compareTo(Match o) {
+    public int compareTo(@NonNull Match o) {
         return this.id.compareTo(o.id);
     }
 

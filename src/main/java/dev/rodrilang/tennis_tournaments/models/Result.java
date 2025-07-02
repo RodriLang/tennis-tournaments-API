@@ -1,11 +1,13 @@
 package dev.rodrilang.tennis_tournaments.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity (name = "results")
+@Data
 public class Result {
 
     @Id
