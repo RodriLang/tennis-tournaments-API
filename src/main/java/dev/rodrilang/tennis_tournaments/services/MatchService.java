@@ -4,6 +4,7 @@ import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
 import dev.rodrilang.tennis_tournaments.models.Match;
 import dev.rodrilang.tennis_tournaments.models.Player;
 import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
+import dev.rodrilang.tennis_tournaments.models.Tournament;
 
 import java.util.List;
 
@@ -15,11 +16,13 @@ public interface MatchService {
     // Listar todos los partidos
     List<MatchResponseDto> getAllMatches();
 
+    List<MatchResponseDto> getAllMatchesByTournamentId(Long tournamentId);
+
     //Asignar un resultado al partido
-    MatchResponseDto addResultToMatch(Long id, ResultRequestDto resultRequestDto);
+    MatchResponseDto addResultToMatch(Match match, ResultRequestDto resultRequestDto);
 
     // Actualizar resultado de un partido
-    MatchResponseDto updateResult(Long matchId, ResultRequestDto resultRequestDto);
+    MatchResponseDto updateResult(Match match, ResultRequestDto resultRequestDto);
 
     // Obtener partidos donde participó un jugador
     List<MatchResponseDto> getMatchesByPlayer(String playerDni);

@@ -85,15 +85,13 @@ public class TournamentServiceImpl implements TournamentService {
         Player player = playerRepository.findByDniAndDeleted(playerDni, false)
                 .orElseThrow(() -> new PlayerNotFoundException(playerDni));
 
-        if (!tournament.getStatus().equals(StatusType.NOT_STARTED)){
-            throw new InvalidTournamentStatusException("Tournament already started");
-        }
+        checkModifiableStatus(tournament);
 
         if (tournament.getPlayers().contains(player)) {
             throw new DuplicatePlayerException(playerDni);
         }
 
-        if(tournament.getPlayers().size() >= 16) {
+        if (tournament.getPlayers().size() >= 16) {
             throw new TournamentFullException("Tournament is full");
         }
 
@@ -104,16 +102,47 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public void unsubscribePlayerFromTournament(Long tournamentId, String playerDni) {
 
+        Tournament tournament = findEntityById(tournamentId);
+        checkModifiableStatus(tournament);
+
+        tournament.getPlayers().removeIf(player -> player.getDni().equals(playerDni));
+        tournamentRepository.save(tournament);
     }
 
     @Override
     public void assignResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto) {
 
+        Tournament tournament = findEntityById(tournamentId);
+        checkModifiableStatus(tournament);
+        boolean foundMatch = false;
+
+        for(Match match : getCurrentRound(tournament).getMatches()) {
+            if(match.getId().equals(matchId)) {
+                matchService.addResultToMatch(match, resultRequestDto);
+                foundMatch = true;
+            }
+        }
+        if(!foundMatch) {
+            throw new MatchNotFoundException("Match not found in Tournament");
+        }
     }
 
     @Override
     public void modifyResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto) {
 
+        Tournament tournament = findEntityById(tournamentId);
+        checkModifiableStatus(tournament);
+        boolean foundMatch = false;
+
+        for(Match match : getCurrentRound(tournament).getMatches()) {
+            if(match.getId().equals(matchId)) {
+                matchService.updateResult(match, resultRequestDto);
+                foundMatch = true;
+            }
+        }
+        if(!foundMatch) {
+            throw new MatchNotFoundException("Match not found in Tournament");
+        }
     }
 
     @Override
@@ -121,12 +150,9 @@ public class TournamentServiceImpl implements TournamentService {
         Tournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new TournamentNotFoundException(tournamentId));
 
+        checkTournamentNotStarted(tournament);
 
-        if(!tournament.getStatus().equals(StatusType.NOT_STARTED)) {
-            throw new InvalidTournamentStatusException("Tournament already started");
-        }
-
-        if(tournament.getPlayers().size() != 16) {
+        if (tournament.getPlayers().size() != 16) {
             throw new InvalidTournamentStatusException("There is not enough players to start tournament");
         }
 
@@ -152,7 +178,7 @@ public class TournamentServiceImpl implements TournamentService {
 
         if (!tournament.getStatus().equals(StatusType.FINISHED)) {
             throw new InvalidTournamentStatusException("There is no winner for this tournament yet. " +
-                    "Tournament Status: " + tournament.getStatus() );
+                    "Tournament Status: " + tournament.getStatus());
         }
         return playerMapper.toDto(matchService.getWinner(this.getCurrentRound(tournament).getMatches().getLast()));
     }
@@ -170,186 +196,32 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public List<PlayerResponseDto> getTournamentPlayers(Long tournamentId) {
-        return null;
+        Tournament tournament = findEntityById(tournamentId);
+        return tournament.getPlayers()
+                .stream()
+                .map(playerMapper::toDto)
+                .toList();
     }
 
     private Round getCurrentRound(Tournament tournament) {
         return tournament.getRounds().getLast();
     }
-/*
-    public Integer addTournament(Tournament tournament) throws FileProcessingException {
-        this.tournament = tournament;
-        initServices();
-        return tournamentRepositoryImp.create(tournament);
-    }
 
-    public Tournament findTournamentById(Integer id) throws TournamentNotFoundException, FileProcessingException {
-        tournament = tournamentRepositoryImp.find(id);
-        initServices();
-        return tournament;
-    }
-
-    public void updateTournament(Tournament tournament) throws TournamentNotFoundException, FileProcessingException {
-
-        if (this.tournament == null) {
-            throw new TournamentNotFoundException("No tournament selected for update.");
-        }
-        if (tournament == null) {
-            throw new IllegalArgumentException("Tournament cannot be null.");
-        }
-        this.setTournament(tournament);
-        tournamentRepositoryImp.update(tournament);
-    }
-
-    public void deleteTournament(Integer id) throws TournamentNotFoundException, FileProcessingException {
-        tournamentRepositoryImp.delete(id);
-    }
-
-    public List<Tournament> getAllTournaments() throws TournamentNotFoundException, FileProcessingException {
-        return tournamentRepositoryImp.getAll();
-    }
-
-    public void registerPlayerInTournament(Player player) throws TournamentFullException, DuplicatePlayerException, TournamentNotFoundException {
-        if (player == null) {
-            throw new IllegalArgumentException("Player cannot be null.");
-        }
-        tournamentPlayerService.registerPlayer(player);
-        updateTournament(tournament);
-    }
-
-    public void unsubscribePlayerFromTournament(Integer idPlayer) throws TournamentNotFoundException, PlayerNotFoundException, InvalidTournamentStatusException {
-        if (!tournament.getStatus().equals(TournamentStatus.NOT_STARTED)) {
-            throw new InvalidTournamentStatusException("The tournament is already started");
-        }
-        tournamentPlayerService.unsubscribePlayer(idPlayer);
-        updateTournament(tournament);
-    }
-
-    public void assignResultToMatch(Integer matchId, Result result) throws InvalidTournamentStatusException, MatchNotFoundException, TournamentNotFoundException, InvalidResultException, IncompleteMatchException {
-        matchService.assignResult(matchId, result);
-
-        updateTournament(tournament);
-    }
-
-    public void modifyResultToMatch(Integer matchId, Result result) throws InvalidTournamentStatusException, MatchNotFoundException, TournamentNotFoundException, InvalidResultException, IncompleteMatchException {
-        matchService.modifyResult(matchId, result);
-        updateTournament(tournament);
-    }
-
-    public void advanceTournament() throws IncompleteMatchException, InvalidTournamentStatusException, TournamentFullException, TournamentNotFoundException {
-        tournamentStatusService.advanceTournament();
-        updateTournament(tournament);
-    }
-
-
-    public Player getTournamentWinner() throws InvalidTournamentStatusException, IncompleteMatchException {
-        return tournamentStatusService.getTournamentWinner();
-    }
-
-    public void setTournament(Tournament tournament) {
-        this.tournament = tournament;
-        initServices();
-    }
-
-    public void setTournamentById(Integer idTournament) throws TournamentNotFoundException {
-        setTournament(findTournamentById(idTournament));
-    }
-
-    public Tournament getTournament() {
-        return tournament;
-    }
-
-    public TournamentPlayerService getTournamentPlayerService() {
-        return tournamentPlayerService;
-    }
-
-    public RoundServiceImpl getRoundService() {
-        return roundService;
-    }
-
-    public MatchServiceImpl getMatchService() {
-        return matchService;
-    }
-
-
-    public void registerPlayer(Player player) throws TournamentFullException, DuplicatePlayerException {
-        if (tournament.getPlayers().size() < 16) {
-            if (!tournament.getPlayers().add(player)) {
-                throw new DuplicatePlayerException(player.getDni());
-            }
-        } else {
-            throw new TournamentFullException("Tournament is full");
+    private void checkTournamentNotStarted(Tournament tournament) {
+        if(!tournament.getStatus().equals(StatusType.NOT_STARTED)) {
+            throw new InvalidTournamentStatusException("Tournament already started");
         }
     }
 
-    public void unsubscribePlayer(Integer idPlayer) throws PlayerNotFoundException {
-
-        Iterator<Player> iterator = tournament.getPlayers().iterator();
-        boolean playerFound = false;
-
-        while (iterator.hasNext()) {
-            Player player = iterator.next();
-            if (player.getIdPlayer().equals(idPlayer)) {
-                iterator.remove();
-                playerFound = true;
-                break;
-            }
-        }
-        if (!playerFound) {
-            throw new PlayerNotFoundException(idPlayer);
+    private void checkTournamentNotFinished(Tournament tournament) {
+        if(tournament.getStatus().equals(StatusType.FINISHED)) {
+            throw new InvalidTournamentStatusException("Tournament has already ended");
         }
     }
 
+    private void checkModifiableStatus(Tournament tournament) {
 
-     public void advanceTournament() throws IncompleteMatchException, InvalidTournamentStatusException, TournamentFullException {
-        switch (tournament.getStatus()) {
-            case NOT_STARTED -> startTournament();
-            case IN_PROGRESS -> advanceCurrentRound();
-            case FINISHED -> throw new InvalidTournamentStatusException(tournament.getStatus().getMessage());
-            default -> throw new IllegalStateException("Unexpected tournament status: " + tournament.getStatus());
-        }
+        checkTournamentNotFinished(tournament);
+        checkTournamentNotStarted(tournament);
     }
-
-    private void startTournament() throws TournamentFullException, IncompleteMatchException {
-        if (tournament.getPlayers().size() != 16) {
-            throw new TournamentFullException("Not enough players to start the tournament.");
-        }
-        tournament.setStatus(TournamentStatus.IN_PROGRESS);
-        roundService.nextRound();
-    }
-
-    private void advanceCurrentRound() throws IncompleteMatchException {
-        if (!roundService.isCurrentRoundComplete()) {
-            throw new IncompleteMatchException("Not all matches have been completed.");
-        }
-        if (!(roundService.getCurrentRound() instanceof Final)) {
-            roundService.nextRound();
-        }
-        updateTournamentStatus();
-    }
-
-    public Player getTournamentWinner() throws InvalidTournamentStatusException, IncompleteMatchException {
-        if (isTournamentFinished()) {
-            return matchService.getWinner(roundService.getFinalMatch());
-        }
-        throw new InvalidTournamentStatusException("Tournament has not finished yet.");
-    }
-
-    private boolean isTournamentFinished() {
-        return tournament.getStatus().equals(TournamentStatus.FINISHED);
-    }
-
-    private void updateTournamentStatus() {
-        if (isFinalRoundComplete()) {
-            tournament.setStatus(TournamentStatus.FINISHED);
-        }
-    }
-
-    private boolean isFinalRoundComplete() {
-        return !tournament.getRounds().isEmpty() &&
-                roundService.getCurrentRound() instanceof Final &&
-                roundService.isCurrentRoundComplete();
-    }
-  */
-
 }

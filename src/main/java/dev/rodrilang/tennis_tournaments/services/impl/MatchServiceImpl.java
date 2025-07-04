@@ -44,12 +44,16 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public MatchResponseDto addResultToMatch(Long id, ResultRequestDto resultRequestDto) {
+    public List<MatchResponseDto> getAllMatchesByTournamentId(Long tournamentId) {
+        return List.of();
+    }
 
-        Match match = this.findEntityById(id);
+    @Override
+    public MatchResponseDto addResultToMatch(Match match, ResultRequestDto resultRequestDto) {
+
 
         if (match.getResult() != null) {
-            throw new InvalidTournamentStatusException("The match with id " + id + " already has a result");
+            throw new InvalidTournamentStatusException("The match with id " + match.getId() + " already has a result");
         }
 
         match.setResult(resultMapper.toEntity(resultRequestDto));
@@ -58,9 +62,8 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public MatchResponseDto updateResult(Long matchId, ResultRequestDto resultRequestDto) {
+    public MatchResponseDto updateResult(Match match, ResultRequestDto resultRequestDto) {
 
-        Match match = this.findEntityById(matchId);
         match.setResult(resultMapper.toEntity(resultRequestDto));
 
         return matchMapper.toDto(matchRepository.save(match));
