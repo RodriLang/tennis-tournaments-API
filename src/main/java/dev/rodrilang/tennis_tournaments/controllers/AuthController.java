@@ -17,7 +17,7 @@ public class AuthController {
     private final CredentialService credentialService;
 
     @PostMapping("/register")
-    public ResponseEntity<CredentialResponseDto> login(@RequestBody CredentialRequestDto request) {
+    public ResponseEntity<CredentialResponseDto> registerCredential(@RequestBody CredentialRequestDto request) {
         return ResponseEntity.ok(credentialService.create(request));
     }
 
@@ -26,6 +26,4 @@ public class AuthController {
         credentialService.login(request);
         return ResponseEntity.ok(credentialService.generateToken(request.username()));
     }
-
-
 }

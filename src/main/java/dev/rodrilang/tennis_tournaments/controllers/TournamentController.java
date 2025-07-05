@@ -6,6 +6,12 @@ import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.TournamentResponseDto;
 import dev.rodrilang.tennis_tournaments.services.TournamentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,45 +23,67 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/tournaments")
 @RequiredArgsConstructor
+@Tag(name = "Torneos", description = "Operaciones relacionadas con torneos de tenis")
 public class TournamentController {
 
     private final TournamentService tournamentService;
 
-    // Crear torneo
-    //@PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Crear un nuevo torneo", description = "Requiere rol ADMIN.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Torneo creado correctamente",
+                    content = @Content(schema = @Schema(implementation = TournamentResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<TournamentResponseDto> createTournament(
             @RequestBody @Valid TournamentRequestDto tournamentRequestDto) {
         return ResponseEntity.ok(tournamentService.create(tournamentRequestDto));
     }
 
-    // Obtener todos los torneos
+    @Operation(summary = "Listar todos los torneos")
+    @ApiResponse(responseCode = "200", description = "Listado exitoso",
+            content = @Content(schema = @Schema(implementation = TournamentResponseDto.class)))
     @GetMapping
     public ResponseEntity<List<TournamentResponseDto>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAll());
     }
 
-    // Obtener torneo por ID
+    @Operation(summary = "Obtener torneo por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Torneo encontrado",
+                    content = @Content(schema = @Schema(implementation = TournamentResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Torneo no encontrado", content = @Content)
+    })
     @GetMapping("/{id}")
     public ResponseEntity<TournamentResponseDto> getTournamentById(@PathVariable Long id) {
         return ResponseEntity.ok(tournamentService.findById(id));
     }
 
-    // Eliminar torneo
+    @Operation(summary = "Eliminar torneo por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Torneo eliminado"),
+            @ApiResponse(responseCode = "404", description = "Torneo no encontrado", content = @Content)
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTournament(@PathVariable Long id) {
         tournamentService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Iniciar torneo
+    @Operation(summary = "Iniciar torneo")
+    @ApiResponse(responseCode = "200", description = "Torneo iniciado correctamente")
     @PatchMapping("/{id}/start")
     public ResponseEntity<Void> startTournament(@PathVariable Long id) {
         tournamentService.startTournament(id);
         return ResponseEntity.ok().build();
     }
 
-    // Registrar jugador en torneo
+    @Operation(summary = "Registrar jugador en torneo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Jugador registrado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Torneo o jugador no encontrado", content = @Content)
+    })
     @PostMapping("/{tournamentId}/players/{dni}")
     public ResponseEntity<Void> registerPlayer(
             @PathVariable Long tournamentId,
@@ -64,7 +92,8 @@ public class TournamentController {
         return ResponseEntity.ok().build();
     }
 
-    // Desinscribir jugador del torneo
+    @Operation(summary = "Desinscribir jugador del torneo")
+    @ApiResponse(responseCode = "204", description = "Jugador eliminado del torneo")
     @DeleteMapping("/{tournamentId}/players/{dni}")
     public ResponseEntity<Void> unsubscribePlayer(
             @PathVariable Long tournamentId,
@@ -73,7 +102,7 @@ public class TournamentController {
         return ResponseEntity.noContent().build();
     }
 
-    // Asignar resultado a un partido
+    @Operation(summary = "Asignar resultado a un partido")
     @PatchMapping("/{tournamentId}/matches/{matchId}/result")
     public ResponseEntity<Void> assignResultToMatch(
             @PathVariable Long tournamentId,
@@ -83,7 +112,7 @@ public class TournamentController {
         return ResponseEntity.ok().build();
     }
 
-    // Modificar resultado de un partido
+    @Operation(summary = "Modificar resultado de un partido")
     @PutMapping("/{tournamentId}/matches/{matchId}/result")
     public ResponseEntity<Void> modifyResultToMatch(
             @PathVariable Long tournamentId,
@@ -93,32 +122,29 @@ public class TournamentController {
         return ResponseEntity.ok().build();
     }
 
-    // Obtener ganador del torneo
+    @Operation(summary = "Obtener el ganador del torneo")
     @GetMapping("/{tournamentId}/winner")
-    public ResponseEntity<PlayerResponseDto> getTournamentWinner(
-            @PathVariable Long tournamentId) {
+    public ResponseEntity<PlayerResponseDto> getTournamentWinner(@PathVariable Long tournamentId) {
         return ResponseEntity.ok(tournamentService.getTournamentWinner(tournamentId));
     }
 
-    // Obtener rondas del torneo
+    @Operation(summary = "Obtener rondas del torneo")
     @GetMapping("/{id}/rounds")
-    public ResponseEntity<List<RoundResponseDto>> getRoundsOfTournament(
-            @PathVariable Long id) {
+    public ResponseEntity<List<RoundResponseDto>> getRoundsOfTournament(@PathVariable Long id) {
         return ResponseEntity.ok(tournamentService.getRoundsOfTournament(id));
     }
 
-    // (Opcional) Obtener jugadores del torneo
+    @Operation(summary = "Obtener jugadores del torneo")
     @GetMapping("/{id}/players")
-    public ResponseEntity<List<PlayerResponseDto>> getTournamentPlayers(
-            @PathVariable Long id) {
+    public ResponseEntity<List<PlayerResponseDto>> getTournamentPlayers(@PathVariable Long id) {
         return ResponseEntity.ok(tournamentService.getTournamentPlayers(id));
     }
 
-    // (Opcional) Actualizar datos del torneo
+    @Operation(summary = "Actualizar información de un torneo")
     @PutMapping("/{id}")
     public ResponseEntity<TournamentResponseDto> updateTournament(
             @PathVariable Long id,
             @RequestBody @Valid TournamentRequestDto tournamentRequestDto) {
-        return ResponseEntity.ok(tournamentService.updateTournament(tournamentRequestDto));
+        return ResponseEntity.ok(tournamentService.updateTournament(id, tournamentRequestDto));
     }
 }
