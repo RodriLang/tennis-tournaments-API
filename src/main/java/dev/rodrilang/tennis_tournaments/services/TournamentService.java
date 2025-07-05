@@ -18,7 +18,7 @@ public interface TournamentService {
 
         TournamentResponseDto findById(Long id);
 
-        TournamentResponseDto updateTournament(TournamentRequestDto tournamentRequestDto);
+        TournamentResponseDto updateTournament(Long tournamentId, TournamentRequestDto tournamentRequestDto);
 
         void delete(Long id);
 

@@ -60,8 +60,12 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentResponseDto updateTournament(TournamentRequestDto tournamentRequestDto) {
-        return null;
+    public TournamentResponseDto updateTournament(Long tournamentId, TournamentRequestDto tournamentRequestDto) {
+
+        Tournament tournament = this.findEntityById(tournamentId);
+        tournamentMapper.updateTournamentFromDto(tournamentRequestDto, tournament);
+
+        return tournamentMapper.toDto(tournament);
     }
 
     @Override
