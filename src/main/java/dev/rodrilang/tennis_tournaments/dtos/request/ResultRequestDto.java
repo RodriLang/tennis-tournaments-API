@@ -1,4 +1,5 @@
 package dev.rodrilang.tennis_tournaments.dtos.request;
+import dev.rodrilang.tennis_tournaments.dtos.SetScoreDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,6 @@ public record ResultRequestDto(
         @NotNull(message = "La lista de sets no puede ser nula")
         @NotEmpty(message = "Debe haber al menos un set jugado")
         @Valid
-        List<SetScoreRequestDto> setsScore
+        List<SetScoreDto> setsScore
 
 ) {}

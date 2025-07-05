@@ -1,4 +1,4 @@
-package dev.rodrilang.tennis_tournaments.dtos.request;
+package dev.rodrilang.tennis_tournaments.dtos;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

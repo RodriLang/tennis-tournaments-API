@@ -1,14 +1,14 @@
 package dev.rodrilang.tennis_tournaments.validations.impl;
 
-import dev.rodrilang.tennis_tournaments.dtos.request.SetScoreRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.SetScoreDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import dev.rodrilang.tennis_tournaments.validations.ValidFullScore;
 
-public class FullScoreValidator implements ConstraintValidator<ValidFullScore, SetScoreRequestDto> {
+public class FullScoreValidator implements ConstraintValidator<ValidFullScore, SetScoreDto> {
 
     @Override
-    public boolean isValid(SetScoreRequestDto setScore, ConstraintValidatorContext context) {
+    public boolean isValid(SetScoreDto setScore, ConstraintValidatorContext context) {
         if (setScore == null) return true; // @NotNull debe validar esto
 
         Integer playerOneScore = setScore.playerOneScore();
