@@ -55,6 +55,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(buildErrorResponse(e, HttpStatus.CONFLICT, request), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(CredentialNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCredentialNotFound(CredentialNotFoundException e, HttpServletRequest request) {
+        return new ResponseEntity<>(buildErrorResponse(e, HttpStatus.UNAUTHORIZED, request), HttpStatus.UNAUTHORIZED);
+    }
 
     // Errores de validación de DTO (@Valid fallidos)
     @ExceptionHandler(MethodArgumentNotValidException.class)
