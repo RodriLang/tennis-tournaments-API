@@ -3,6 +3,8 @@ package dev.rodrilang.tennis_tournaments.services.impl;
 
 import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.mappers.PlayerMapper;
 import dev.rodrilang.tennis_tournaments.models.Match;
 import dev.rodrilang.tennis_tournaments.models.Player;
 import dev.rodrilang.tennis_tournaments.exceptions.IncompleteMatchException;
@@ -26,6 +28,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchMapper matchMapper;
     private final ResultMapper resultMapper;
     private final ResultService resultService;
+    private final PlayerMapper playerMapper;
 
 
     @Override
@@ -44,11 +47,6 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public List<MatchResponseDto> getAllMatchesByTournamentId(Long tournamentId) {
-        return List.of();
-    }
-
-    @Override
     public MatchResponseDto addResultToMatch(Match match, ResultRequestDto resultRequestDto) {
 
 
@@ -62,11 +60,22 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    public MatchResponseDto addResultToMatch(Long matchId, ResultRequestDto resultRequestDto) {
+
+        return this.addResultToMatch(findEntityById(matchId), resultRequestDto);
+    }
+
+    @Override
     public MatchResponseDto updateResult(Match match, ResultRequestDto resultRequestDto) {
 
         match.setResult(resultMapper.toEntity(resultRequestDto));
 
         return matchMapper.toDto(matchRepository.save(match));
+    }
+
+    @Override
+    public MatchResponseDto updateResult(Long matchId, ResultRequestDto resultRequestDto) {
+        return this.addResultToMatch(findEntityById(matchId), resultRequestDto);
     }
 
     @Override
@@ -100,9 +109,10 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public Boolean isFinished(Match match) {
-        return null;
+    public PlayerResponseDto getWinner(Long matchId) {
+        return playerMapper.toDto(getWinner(this.findEntityById(matchId)));
     }
+
 
     private Match findEntityById(Long matchId) {
         return matchRepository.findById(matchId)
