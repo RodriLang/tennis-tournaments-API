@@ -51,7 +51,7 @@ public class CredentialServiceImpl implements CredentialService {
 
         if (!passwordEncoder.matches(dto.password(), credential.getPassword())) {
             log.warn("Invalid password for username: {}", dto.username());
-            throw new IllegalArgumentException("Bad credentials");
+            throw new CredentialNotFoundException();
         }
 
         log.info("Successful login for username: {}", dto.username());

@@ -20,6 +20,7 @@ public class Credential {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleType role;
 }
