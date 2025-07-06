@@ -4,6 +4,7 @@ package dev.rodrilang.tennis_tournaments.services.impl;
 import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
+import dev.rodrilang.tennis_tournaments.enums.StatusType;
 import dev.rodrilang.tennis_tournaments.mappers.PlayerMapper;
 import dev.rodrilang.tennis_tournaments.models.Match;
 import dev.rodrilang.tennis_tournaments.models.Player;
@@ -49,14 +50,11 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public MatchResponseDto addResultToMatch(Match match, ResultRequestDto resultRequestDto) {
 
-
         if (match.getResult() != null) {
             throw new InvalidTournamentStatusException("The match with id " + match.getId() + " already has a result");
         }
 
-        match.setResult(resultMapper.toEntity(resultRequestDto));
-
-        return matchMapper.toDto(matchRepository.save(match));
+        return updateResult(match, resultRequestDto);
     }
 
     @Override
@@ -64,13 +62,19 @@ public class MatchServiceImpl implements MatchService {
 
         match.setResult(resultMapper.toEntity(resultRequestDto));
 
+        if (thereIsAWinner(match)) {
+            match.setStatus(StatusType.FINISHED);
+        } else {
+            match.setStatus(StatusType.IN_PROGRESS);
+        }
+
         return matchMapper.toDto(matchRepository.save(match));
     }
 
     @Override
     public List<MatchResponseDto> getMatchesByPlayer(String playerDni) {
 
-        return matchRepository.getMatchesByPlayerOne_DniOrPlayerTwo_Dni(playerDni,playerDni)
+        return matchRepository.getMatchesByPlayerOne_DniOrPlayerTwo_Dni(playerDni, playerDni)
                 .stream()
                 .map(matchMapper::toDto)
                 .toList();
@@ -106,5 +110,20 @@ public class MatchServiceImpl implements MatchService {
     private Match findEntityById(Long matchId) {
         return matchRepository.findById(matchId)
                 .orElseThrow(() -> new MatchNotFoundException(matchId));
+    }
+
+    private boolean thereIsAWinner(Match match) {
+
+        if (match.getResult() == null) {
+            return false;
+        }
+
+        // Check if player one has won two sets
+        if (resultService.getSetsWonPlayerOne(match.getResult()) == 2) {
+            return true;
+        }
+
+        // Check if player two has won two sets
+        else return resultService.getSetsWonPlayerTwo(match.getResult()) == 2;
     }
 }

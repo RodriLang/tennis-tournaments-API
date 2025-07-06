@@ -1,6 +1,7 @@
 package dev.rodrilang.tennis_tournaments.services.impl;
 
 import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.request.RoundResultsRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.request.TournamentRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import dev.rodrilang.tennis_tournaments.repositories.TournamentRepository;
 import dev.rodrilang.tennis_tournaments.services.TournamentService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +111,10 @@ public class TournamentServiceImpl implements TournamentService {
         Tournament tournament = findEntityById(tournamentId);
         checkModifiableStatus(tournament);
 
-        tournament.getPlayers().removeIf(player -> player.getDni().equals(playerDni));
+        if (!tournament.getPlayers().removeIf(player -> player.getDni().equals(playerDni))) {
+            throw new PlayerNotFoundException("The player " + playerDni + " is not in this Tournament");
+        }
+
         tournamentRepository.save(tournament);
     }
 
@@ -117,36 +122,61 @@ public class TournamentServiceImpl implements TournamentService {
     public void assignResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto) {
 
         Tournament tournament = findEntityById(tournamentId);
-        checkModifiableStatus(tournament);
         boolean foundMatch = false;
 
-        for(Match match : getCurrentRound(tournament).getMatches()) {
-            if(match.getId().equals(matchId)) {
+        for (Match match : getCurrentRound(tournament).getMatches()) {
+            if (match.getId().equals(matchId)) {
                 matchService.addResultToMatch(match, resultRequestDto);
                 foundMatch = true;
             }
         }
-        if(!foundMatch) {
+        if (!foundMatch) {
             throw new MatchNotFoundException("Match not found in Tournament");
         }
+    }
+
+    @Transactional
+    @Override
+    public void assignResultsToRound(Long tournamentId, RoundType roundType, RoundResultsRequestDto roundResultsRequestDto) {
+        Tournament tournament = findEntityById(tournamentId);
+        Round currentRound = getCurrentRound(tournament);
+
+        if (!currentRound.getType().equals(roundType)) {
+            throw new InvalidTournamentStatusException("The tournament " + tournamentId + " is not in this Round");
+        }
+        roundResultsRequestDto.results()
+                .forEach(result ->
+                        assignResultToMatch(tournamentId, result.matchId(), result.result()));
     }
 
     @Override
     public void modifyResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto) {
 
         Tournament tournament = findEntityById(tournamentId);
-        checkModifiableStatus(tournament);
         boolean foundMatch = false;
 
-        for(Match match : getCurrentRound(tournament).getMatches()) {
-            if(match.getId().equals(matchId)) {
+        for (Match match : getCurrentRound(tournament).getMatches()) {
+            if (match.getId().equals(matchId)) {
                 matchService.updateResult(match, resultRequestDto);
                 foundMatch = true;
             }
         }
-        if(!foundMatch) {
+        if (!foundMatch) {
             throw new MatchNotFoundException("Match not found in Tournament");
         }
+    }
+
+    @Override
+    public void modifyResultsToRound(Long tournamentId, RoundType roundType, RoundResultsRequestDto roundResultsRequestDto) {
+        Tournament tournament = findEntityById(tournamentId);
+        Round currentRound = getCurrentRound(tournament);
+
+        if (!currentRound.getType().equals(roundType)) {
+            throw new InvalidTournamentStatusException("The tournament " + tournamentId + " is not in this Round");
+        }
+        roundResultsRequestDto.results()
+                .forEach(result ->
+                        modifyResultToMatch(tournamentId, result.matchId(), result.result()));
     }
 
     @Override
@@ -177,45 +207,45 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public void advanceToNextRound(Long tournamentId) {
-            Tournament tournament = findEntityById(tournamentId);
+        Tournament tournament = findEntityById(tournamentId);
 
-            if (tournament.getStatus() != StatusType.IN_PROGRESS) {
-                throw new InvalidTournamentStatusException("Tournament must be in progress to continue.");
-            }
+        if (tournament.getStatus() != StatusType.IN_PROGRESS) {
+            throw new InvalidTournamentStatusException("Tournament must be in progress to continue.");
+        }
 
-            Round currentRound = getCurrentRound(tournament);
+        Round currentRound = getCurrentRound(tournament);
 
-            boolean allMatchesCompleted = currentRound.getMatches().stream()
-                    .allMatch(match -> match.getResult() != null);
+        boolean allMatchesCompleted = currentRound.getMatches().stream()
+                .allMatch(match -> match.getResult() != null);
 
-            if (!allMatchesCompleted) {
-                throw new InvalidTournamentStatusException("All matches must be completed to advance.");
-            }
+        if (!allMatchesCompleted) {
+            throw new InvalidTournamentStatusException("All matches must be completed to advance.");
+        }
 
-            List<Player> winners = currentRound.getMatches().stream()
-                    .map(matchService::getWinner)
-                    .toList();
+        List<Player> winners = currentRound.getMatches().stream()
+                .map(matchService::getWinner)
+                .toList();
 
-            RoundType nextRoundType = currentRound.getType().next();
+        RoundType nextRoundType = currentRound.getType().next();
 
-            if (nextRoundType == null) {
-                // No hay más rondas, el torneo termina
-                tournament.setStatus(StatusType.FINISHED);
-                tournamentRepository.save(tournament);
-                return;
-            }
-
-            Round nextRound = Round.builder()
-                    .type(nextRoundType)
-                    .tournament(tournament)
-                    .build();
-
-            RoundStrategy strategy = roundFactory.getStrategy(nextRoundType);
-            List<Match> nextMatches = strategy.generateMatches(winners, nextRound);
-            nextRound.setMatches(nextMatches);
-
-            tournament.getRounds().add(nextRound);
+        if (nextRoundType == null) {
+            // No hay más rondas, el torneo termina
+            tournament.setStatus(StatusType.FINISHED);
             tournamentRepository.save(tournament);
+            return;
+        }
+
+        Round nextRound = Round.builder()
+                .type(nextRoundType)
+                .tournament(tournament)
+                .build();
+
+        RoundStrategy strategy = roundFactory.getStrategy(nextRoundType);
+        List<Match> nextMatches = strategy.generateMatches(winners, nextRound);
+        nextRound.setMatches(nextMatches);
+
+        tournament.getRounds().add(nextRound);
+        tournamentRepository.save(tournament);
 
     }
 
@@ -256,13 +286,13 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     private void checkTournamentNotStarted(Tournament tournament) {
-        if(!tournament.getStatus().equals(StatusType.NOT_STARTED)) {
+        if (!tournament.getStatus().equals(StatusType.NOT_STARTED)) {
             throw new InvalidTournamentStatusException("Tournament already started");
         }
     }
 
     private void checkTournamentNotFinished(Tournament tournament) {
-        if(tournament.getStatus().equals(StatusType.FINISHED)) {
+        if (tournament.getStatus().equals(StatusType.FINISHED)) {
             throw new InvalidTournamentStatusException("Tournament has already ended");
         }
     }

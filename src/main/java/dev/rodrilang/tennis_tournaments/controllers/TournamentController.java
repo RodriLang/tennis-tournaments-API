@@ -1,10 +1,12 @@
 package dev.rodrilang.tennis_tournaments.controllers;
 
 import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.request.RoundResultsRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.request.TournamentRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.TournamentResponseDto;
+import dev.rodrilang.tennis_tournaments.enums.RoundType;
 import dev.rodrilang.tennis_tournaments.services.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -118,6 +120,28 @@ public class TournamentController {
         tournamentService.assignResultToMatch(tournamentId, matchId, resultRequestDto);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "Asignar resultado a todos los partidos de una ronda")
+    @PatchMapping("/{tournamentId}/rounds/{roundType}/results")
+    public ResponseEntity<Void> assignResultsToRound(
+            @PathVariable Long tournamentId,
+            @PathVariable RoundType roundType,
+            @RequestBody @Valid RoundResultsRequestDto roundResultsRequestDto) {
+        tournamentService.assignResultsToRound(tournamentId, roundType, roundResultsRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Modificar resultado a todos los partidos de una ronda")
+    @PutMapping("/{tournamentId}/rounds/{roundType}/results")
+    public ResponseEntity<Void> modifyResultsToRound(
+            @PathVariable Long tournamentId,
+            @PathVariable RoundType roundType,
+            @RequestBody @Valid RoundResultsRequestDto roundResultsRequestDto) {
+        tournamentService.modifyResultsToRound(tournamentId, roundType, roundResultsRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+
 
     @Operation(summary = "Modificar resultado de un partido")
     @PutMapping("/{tournamentId}/matches/{matchId}/result")

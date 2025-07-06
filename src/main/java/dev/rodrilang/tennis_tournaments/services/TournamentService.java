@@ -2,10 +2,12 @@ package dev.rodrilang.tennis_tournaments.services;
 
 
 import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
+import dev.rodrilang.tennis_tournaments.dtos.request.RoundResultsRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.request.TournamentRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.TournamentResponseDto;
+import dev.rodrilang.tennis_tournaments.enums.RoundType;
 import dev.rodrilang.tennis_tournaments.models.Tournament;
 
 import java.util.List;
@@ -30,7 +32,11 @@ public interface TournamentService {
 
         void assignResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto);
 
+        void assignResultsToRound(Long tournamentId, RoundType roundType, RoundResultsRequestDto roundResultsRequestDto);
+
         void modifyResultToMatch(Long tournamentId, Long matchId, ResultRequestDto resultRequestDto);
+
+        void modifyResultsToRound(Long tournamentId, RoundType roundType, RoundResultsRequestDto roundResultsRequestDto);
 
         void startTournament(Long tournamentId);
 
