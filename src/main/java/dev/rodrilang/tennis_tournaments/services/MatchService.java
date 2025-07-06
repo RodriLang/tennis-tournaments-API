@@ -19,12 +19,8 @@ public interface MatchService {
     //Asignar un resultado al partido
     MatchResponseDto addResultToMatch(Match match, ResultRequestDto resultRequestDto);
 
-    MatchResponseDto addResultToMatch(Long matchId, ResultRequestDto resultRequestDto);
-
     // Actualizar resultado de un partido
     MatchResponseDto updateResult(Match match, ResultRequestDto resultRequestDto);
-
-    MatchResponseDto updateResult(Long matchId, ResultRequestDto resultRequestDto);
 
     // Obtener partidos donde participó un jugador
     List<MatchResponseDto> getMatchesByPlayer(String playerDni);
