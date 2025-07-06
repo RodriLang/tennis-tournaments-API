@@ -6,7 +6,7 @@ import dev.rodrilang.tennis_tournaments.dtos.response.ResultResponseDto;
 import dev.rodrilang.tennis_tournaments.models.Result;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = SetScoreMapper.class)
 public interface ResultMapper {
 
     Result toEntity (ResultRequestDto resultRequestDto);

@@ -5,7 +5,7 @@ import dev.rodrilang.tennis_tournaments.dtos.response.TournamentResponseDto;
 import dev.rodrilang.tennis_tournaments.models.Tournament;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {RoundMapper.class, PlayerMapper.class})
 public interface TournamentMapper {
 
     Tournament toEntity (TournamentRequestDto tournamentRequestDto);
