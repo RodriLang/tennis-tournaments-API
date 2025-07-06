@@ -12,7 +12,7 @@ import java.util.Set;
 public record TournamentResponseDto(
 
         @Schema(description = "ID del torneo", example = "1")
-        Long id,
+        Long tournamentId,
 
         @Schema(description = "Nombre del torneo", example = "Copa Primavera")
         String name,

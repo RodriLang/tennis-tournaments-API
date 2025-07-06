@@ -10,6 +10,7 @@ public interface TournamentMapper {
 
     Tournament toEntity (TournamentRequestDto tournamentRequestDto);
 
+    @Mapping(target = "tournamentId", source = "id")
     TournamentResponseDto toDto (Tournament tournament);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

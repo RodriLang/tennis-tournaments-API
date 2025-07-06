@@ -4,9 +4,9 @@ import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
 import dev.rodrilang.tennis_tournaments.models.Round;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = MatchMapper.class)
 public interface RoundMapper {
 
-    RoundResponseDto toDto (Round round);
+    RoundResponseDto toDto(Round round);
 
 }
