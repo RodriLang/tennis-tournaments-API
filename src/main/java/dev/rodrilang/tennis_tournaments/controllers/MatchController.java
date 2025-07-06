@@ -1,6 +1,5 @@
 package dev.rodrilang.tennis_tournaments.controllers;
 
-import dev.rodrilang.tennis_tournaments.dtos.request.ResultRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.MatchResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
 import dev.rodrilang.tennis_tournaments.services.MatchService;
@@ -18,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/matches")
 @RequiredArgsConstructor
-@Tag(name = "Partidos", description = "Operaciones relacionadas con los partidos del torneo")
+@Tag(name = "Partidos", description = "Operaciones relacionadas con los partidos fuera del contexto de un torneo")
 public class MatchController {
 
     private final MatchService matchService;
@@ -42,32 +41,6 @@ public class MatchController {
         return ResponseEntity.ok(matchService.findMatchById(matchId));
     }
 
-    @Operation(summary = "Asignar resultado a un partido")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Resultado asignado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Partido no encontrado o datos inválidos")
-    })
-    @PatchMapping("/{matchId}/result")
-    public ResponseEntity<MatchResponseDto> assignResultToMatch(
-            @Parameter(description = "ID del partido", example = "1")
-            @PathVariable Long matchId,
-            @RequestBody ResultRequestDto resultRequestDto) {
-        return ResponseEntity.ok(matchService.addResultToMatch(matchId, resultRequestDto));
-    }
-
-    @Operation(summary = "Actualizar el resultado de un partido")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Resultado actualizado correctamente"),
-            @ApiResponse(responseCode = "404", description = "Partido no encontrado")
-    })
-    @PutMapping("/{matchId}/result")
-    public ResponseEntity<MatchResponseDto> updateMatchResult(
-            @Parameter(description = "ID del partido", example = "1")
-            @PathVariable Long matchId,
-            @RequestBody ResultRequestDto resultRequestDto) {
-        return ResponseEntity.ok(matchService.updateResult(matchId, resultRequestDto));
-    }
-
     @Operation(summary = "Obtener todos los partidos de un jugador")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado de partidos del jugador"),
@@ -79,6 +52,7 @@ public class MatchController {
             @PathVariable String dni) {
         return ResponseEntity.ok(matchService.getMatchesByPlayer(dni));
     }
+
 
     @Operation(summary = "Obtener el ganador de un partido")
     @ApiResponses({

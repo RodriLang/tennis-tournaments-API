@@ -6,7 +6,6 @@ import dev.rodrilang.tennis_tournaments.dtos.response.CredentialResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.TokenResponseDto;
 import dev.rodrilang.tennis_tournaments.services.CredentialService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,10 +28,14 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<CredentialResponseDto> registerCredential(
-            @RequestBody(description = "Datos para crear una nueva credencial", required = true)
-            CredentialRequestDto request) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos para crear una nueva credencial",
+                    required = true
+            )
+            @RequestBody CredentialRequestDto request) {
         return ResponseEntity.ok(credentialService.create(request));
     }
+
 
     @Operation(summary = "Iniciar sesión")
     @ApiResponses({
@@ -41,8 +44,9 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDto> login(
-            @RequestBody(description = "Credenciales del usuario", required = true)
-            LoginRequestDto request) {
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
+                    (description = "Credenciales del usuario", required = true)
+            @RequestBody LoginRequestDto request) {
         credentialService.login(request);
         return ResponseEntity.ok(credentialService.generateToken(request.username()));
     }
