@@ -79,6 +79,13 @@ public class TournamentController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "Avanzar a la siguiente ronda del torneo")
+    @PatchMapping("/{id}/next-round")
+    public ResponseEntity<Void> advanceToNextRound(@PathVariable Long id) {
+        tournamentService.advanceToNextRound(id);
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "Registrar jugador en torneo")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Jugador registrado correctamente"),

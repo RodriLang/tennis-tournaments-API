@@ -176,6 +176,50 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
+    public void advanceToNextRound(Long tournamentId) {
+            Tournament tournament = findEntityById(tournamentId);
+
+            if (tournament.getStatus() != StatusType.IN_PROGRESS) {
+                throw new InvalidTournamentStatusException("Tournament must be in progress to continue.");
+            }
+
+            Round currentRound = getCurrentRound(tournament);
+
+            boolean allMatchesCompleted = currentRound.getMatches().stream()
+                    .allMatch(match -> match.getResult() != null);
+
+            if (!allMatchesCompleted) {
+                throw new InvalidTournamentStatusException("All matches must be completed to advance.");
+            }
+
+            List<Player> winners = currentRound.getMatches().stream()
+                    .map(matchService::getWinner)
+                    .toList();
+
+            RoundType nextRoundType = currentRound.getType().next();
+
+            if (nextRoundType == null) {
+                // No hay más rondas, el torneo termina
+                tournament.setStatus(StatusType.FINISHED);
+                tournamentRepository.save(tournament);
+                return;
+            }
+
+            Round nextRound = Round.builder()
+                    .type(nextRoundType)
+                    .tournament(tournament)
+                    .build();
+
+            RoundStrategy strategy = roundFactory.getStrategy(nextRoundType);
+            List<Match> nextMatches = strategy.generateMatches(winners, nextRound);
+            nextRound.setMatches(nextMatches);
+
+            tournament.getRounds().add(nextRound);
+            tournamentRepository.save(tournament);
+
+    }
+
+    @Override
     public PlayerResponseDto getTournamentWinner(Long tournamentId) {
 
         Tournament tournament = findEntityById(tournamentId);

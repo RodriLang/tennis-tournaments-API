@@ -34,6 +34,8 @@ public interface TournamentService {
 
         void startTournament(Long tournamentId);
 
+        void advanceToNextRound(Long tournamentId);
+
         PlayerResponseDto getTournamentWinner(Long tournamentId);
 
         List<RoundResponseDto> getRoundsOfTournament(Long tournamentId);
