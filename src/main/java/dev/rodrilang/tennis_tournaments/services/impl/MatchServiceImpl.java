@@ -60,22 +60,11 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public MatchResponseDto addResultToMatch(Long matchId, ResultRequestDto resultRequestDto) {
-
-        return this.addResultToMatch(findEntityById(matchId), resultRequestDto);
-    }
-
-    @Override
     public MatchResponseDto updateResult(Match match, ResultRequestDto resultRequestDto) {
 
         match.setResult(resultMapper.toEntity(resultRequestDto));
 
         return matchMapper.toDto(matchRepository.save(match));
-    }
-
-    @Override
-    public MatchResponseDto updateResult(Long matchId, ResultRequestDto resultRequestDto) {
-        return this.addResultToMatch(findEntityById(matchId), resultRequestDto);
     }
 
     @Override
