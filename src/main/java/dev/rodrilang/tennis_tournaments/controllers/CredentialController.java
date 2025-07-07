@@ -1,5 +1,6 @@
 package dev.rodrilang.tennis_tournaments.controllers;
 
+import dev.rodrilang.tennis_tournaments.dtos.request.ChangePasswordRequest;
 import dev.rodrilang.tennis_tournaments.dtos.request.CredentialRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.CredentialResponseDto;
 import dev.rodrilang.tennis_tournaments.services.CredentialService;
@@ -56,13 +57,24 @@ public class CredentialController {
     @PreAuthorize("hasRole('ROOT')")
     @DeleteMapping("/revoke/{id}")
     public ResponseEntity<Void> revokeCredential(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Datos para crear una nueva credencial",
-                    required = true
-            )
             @PathVariable Long id) {
         credentialService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Eliminar un usuario")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Usuario borrado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
+    @PatchMapping("/change-password")
+    public ResponseEntity<CredentialResponseDto> updatePassword(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Verificación de contraseña antigua y nueva",
+                    required = true
+            )
+            @RequestBody ChangePasswordRequest changePasswordRequest) {
+       return ResponseEntity.ok(credentialService.updatePassword(changePasswordRequest));
     }
 
 }

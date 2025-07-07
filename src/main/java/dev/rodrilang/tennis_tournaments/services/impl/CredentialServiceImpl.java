@@ -1,5 +1,6 @@
 package dev.rodrilang.tennis_tournaments.services.impl;
 
+import dev.rodrilang.tennis_tournaments.dtos.request.ChangePasswordRequest;
 import dev.rodrilang.tennis_tournaments.dtos.request.CredentialRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.request.LoginRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.CredentialResponseDto;
@@ -16,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,7 +27,6 @@ public class CredentialServiceImpl implements CredentialService {
     private final CredentialMapper credentialMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
 
     @Override
     public CredentialResponseDto create(CredentialRequestDto credentialRequestDto) {
@@ -43,33 +42,21 @@ public class CredentialServiceImpl implements CredentialService {
 
 
     @Override
-    public CredentialResponseDto login(LoginRequestDto dto) {
+    public void login(LoginRequestDto dto) {
         log.info("Login attempt by username: {}", dto.username());
 
-        Credential credential = credentialRepository.findByUsername(dto.username())
-                .orElseThrow(() -> {
-                    log.warn("Credential not found for username: {}", dto.username());
-                    return new CredentialNotFoundException();
-                });
+        Credential credential = this.getCredentialByUsername(dto.username());
 
-        if (!passwordEncoder.matches(dto.password(), credential.getPassword())) {
-            log.warn("Invalid password for username: {}", dto.username());
-            throw new CredentialNotFoundException();
-        }
+        this.checkPassword(credential, dto.password());
 
         log.info("Successful login for username: {}", dto.username());
-        return credentialMapper.toDto(credential);
     }
 
     @Override
     public TokenResponseDto generateToken(String username) {
         log.info("Generating token for username: {}", username);
 
-        Credential credential = credentialRepository.findByUsername(username)
-                .orElseThrow(() -> {
-                    log.error("Credential not found for token of: {}", username);
-                    return new CredentialNotFoundException();
-                });
+        Credential credential = this.getCredentialByUsername(username);
 
         log.info("Token successfully generated for username: {}", username);
         return new TokenResponseDto(jwtService.generateToken(credential));
@@ -90,5 +77,30 @@ public class CredentialServiceImpl implements CredentialService {
                 .stream()
                 .map(credentialMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public CredentialResponseDto updatePassword(ChangePasswordRequest changePasswordRequest) {
+        Credential credential = this.getCredentialByUsername(changePasswordRequest.username());
+        this.checkPassword(credential, changePasswordRequest.oldPassword());
+
+        credential.setPassword(passwordEncoder.encode(changePasswordRequest.newPassword()));
+        credentialRepository.save(credential);
+        return credentialMapper.toDto(credential);
+    }
+
+    private Credential getCredentialByUsername(String username) {
+        return credentialRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.warn("Credential not found for username: {}", username);
+                    return new CredentialNotFoundException();
+                });
+    }
+
+    private void checkPassword(Credential credential, String password) {
+        if(!passwordEncoder.matches(password, credential.getPassword())) {
+            log.warn("Invalid password for username: {}", credential.getUsername());
+            throw new CredentialNotFoundException();
+        }
     }
 }
