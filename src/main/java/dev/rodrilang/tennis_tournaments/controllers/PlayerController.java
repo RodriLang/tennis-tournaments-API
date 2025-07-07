@@ -10,10 +10,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +32,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "201", description = "Jugador creado correctamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PlayerResponseDto> createPlayer(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -45,6 +46,7 @@ public class PlayerController {
 
 
     @Operation(summary = "Actualizar datos de un jugador")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Jugador actualizado correctamente"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
@@ -68,6 +70,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "200", description = "Puntos ajustados correctamente"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{dni}/points")
     public ResponseEntity<PlayerResponseDto> adjustPlayerPoints(
             @Parameter(description = "DNI del jugador", example = "12345678")
@@ -82,6 +85,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "200", description = "Jugador encontrado"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{dni}")
     public ResponseEntity<PlayerResponseDto> getByDni(
             @Parameter(description = "DNI del jugador", example = "12345678")
@@ -91,6 +95,7 @@ public class PlayerController {
 
     @Operation(summary = "Obtener todos los jugadores")
     @ApiResponse(responseCode = "200", description = "Listado exitoso")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<PlayerResponseDto>> getAll() {
         return ResponseEntity.ok(playerService.getAll());
@@ -101,6 +106,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "204", description = "Jugador eliminado correctamente"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{dni}")
     public ResponseEntity<Void> deletePlayer(
             @Parameter(description = "DNI del jugador", example = "12345678")
@@ -114,6 +120,7 @@ public class PlayerController {
             @ApiResponse(responseCode = "200", description = "Jugador restaurado correctamente"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{dni}/restore")
     public ResponseEntity<PlayerResponseDto> restorePlayer(
             @Parameter(description = "DNI del jugador", example = "12345678")

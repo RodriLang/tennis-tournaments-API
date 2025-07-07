@@ -5,6 +5,8 @@ import dev.rodrilang.tennis_tournaments.dtos.request.LoginRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.CredentialResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.TokenResponseDto;
 
+import java.util.List;
+
 public interface CredentialService {
 
     CredentialResponseDto create(CredentialRequestDto credentialRequestDto);
@@ -12,5 +14,9 @@ public interface CredentialService {
     CredentialResponseDto login(LoginRequestDto dto);
 
     TokenResponseDto generateToken(String username);
+
+    void delete(Long credentialId);
+
+    List<CredentialResponseDto> getCredentials();
 }
 

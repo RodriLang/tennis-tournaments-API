@@ -4,5 +4,6 @@ public enum RoleType {
 
     ROLE_PLAYER,
     ROLE_JUDGE,
-    ROLE_ADMIN
+    ROLE_ADMIN,
+    ROLE_ROOT
 }

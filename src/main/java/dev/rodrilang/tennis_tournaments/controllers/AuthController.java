@@ -21,22 +21,6 @@ public class AuthController {
 
     private final CredentialService credentialService;
 
-    @Operation(summary = "Registrar un nuevo usuario")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario ya existe")
-    })
-    @PostMapping("/register")
-    public ResponseEntity<CredentialResponseDto> registerCredential(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Datos para crear una nueva credencial",
-                    required = true
-            )
-            @RequestBody CredentialRequestDto request) {
-        return ResponseEntity.ok(credentialService.create(request));
-    }
-
-
     @Operation(summary = "Iniciar sesión")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login exitoso, token generado"),

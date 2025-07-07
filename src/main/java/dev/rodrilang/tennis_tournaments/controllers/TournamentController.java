@@ -67,6 +67,7 @@ public class TournamentController {
             @ApiResponse(responseCode = "204", description = "Torneo eliminado"),
             @ApiResponse(responseCode = "404", description = "Torneo no encontrado", content = @Content)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTournament(@PathVariable Long id) {
         tournamentService.delete(id);
@@ -75,6 +76,7 @@ public class TournamentController {
 
     @Operation(summary = "Iniciar torneo")
     @ApiResponse(responseCode = "200", description = "Torneo iniciado correctamente")
+    @PreAuthorize("hasAnyRole('ADMIN', 'JUDGE')")
     @PatchMapping("/{id}/start")
     public ResponseEntity<Void> startTournament(@PathVariable Long id) {
         tournamentService.startTournament(id);
@@ -82,6 +84,7 @@ public class TournamentController {
     }
 
     @Operation(summary = "Avanzar a la siguiente ronda del torneo")
+    @PreAuthorize("hasAnyRole('ADMIN', 'JUDGE')")
     @PatchMapping("/{id}/next-round")
     public ResponseEntity<Void> advanceToNextRound(@PathVariable Long id) {
         tournamentService.advanceToNextRound(id);
@@ -93,6 +96,7 @@ public class TournamentController {
             @ApiResponse(responseCode = "200", description = "Jugador registrado correctamente"),
             @ApiResponse(responseCode = "404", description = "Torneo o jugador no encontrado", content = @Content)
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{tournamentId}/players/{dni}")
     public ResponseEntity<Void> registerPlayer(
             @PathVariable Long tournamentId,
@@ -103,6 +107,7 @@ public class TournamentController {
 
     @Operation(summary = "Desinscribir jugador del torneo")
     @ApiResponse(responseCode = "204", description = "Jugador eliminado del torneo")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{tournamentId}/players/{dni}")
     public ResponseEntity<Void> unsubscribePlayer(
             @PathVariable Long tournamentId,
@@ -112,6 +117,7 @@ public class TournamentController {
     }
 
     @Operation(summary = "Asignar resultado a un partido")
+    @PreAuthorize("hasAnyRole('ADMIN', 'JUDGE')")
     @PatchMapping("/{tournamentId}/matches/{matchId}/result")
     public ResponseEntity<Void> assignResultToMatch(
             @PathVariable Long tournamentId,
@@ -122,6 +128,7 @@ public class TournamentController {
     }
 
     @Operation(summary = "Asignar resultado a todos los partidos de una ronda")
+    @PreAuthorize("hasAnyRole('ADMIN', 'JUDGE')")
     @PatchMapping("/{tournamentId}/rounds/{roundType}/results")
     public ResponseEntity<Void> assignResultsToRound(
             @PathVariable Long tournamentId,
@@ -132,6 +139,7 @@ public class TournamentController {
     }
 
     @Operation(summary = "Modificar resultado a todos los partidos de una ronda")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{tournamentId}/rounds/{roundType}/results")
     public ResponseEntity<Void> modifyResultsToRound(
             @PathVariable Long tournamentId,
@@ -142,8 +150,8 @@ public class TournamentController {
     }
 
 
-
     @Operation(summary = "Modificar resultado de un partido")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{tournamentId}/matches/{matchId}/result")
     public ResponseEntity<Void> modifyResultToMatch(
             @PathVariable Long tournamentId,
@@ -172,6 +180,7 @@ public class TournamentController {
     }
 
     @Operation(summary = "Actualizar información de un torneo")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<TournamentResponseDto> updateTournament(
             @PathVariable Long id,

@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -71,5 +74,21 @@ public class CredentialServiceImpl implements CredentialService {
         log.info("Token successfully generated for username: {}", username);
         return new TokenResponseDto(jwtService.generateToken(credential));
 
+    }
+
+    @Override
+    public void delete(Long credentialId) {
+        Credential credential = credentialRepository.findById(credentialId)
+                .orElseThrow(CredentialNotFoundException::new);
+
+        credentialRepository.delete(credential);
+    }
+
+    @Override
+    public List<CredentialResponseDto> getCredentials() {
+        return credentialRepository.findAll()
+                .stream()
+                .map(credentialMapper::toDto)
+                .toList();
     }
 }
