@@ -112,7 +112,8 @@ public class MatchServiceImpl implements MatchService {
                 .orElseThrow(() -> new MatchNotFoundException(matchId));
     }
 
-    private boolean thereIsAWinner(Match match) {
+    @Override
+    public boolean thereIsAWinner(Match match) {
 
         if (match.getResult() == null) {
             return false;

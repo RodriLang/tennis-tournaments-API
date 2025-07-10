@@ -46,7 +46,8 @@ public class Tournament implements Comparable<Tournament> {
     )
     private Set<Player> players = new TreeSet<>();
 
-    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "tournament_id") // Esto hace que la FK quede en Round
     private List<Round> rounds = new ArrayList<>();
 
     @PrePersist

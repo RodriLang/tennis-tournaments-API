@@ -25,10 +25,6 @@ public class Round {
 
     private Integer givenPoints;
 
-    @ManyToOne
-    @JoinColumn(name = "tournament_id", nullable = false)
-    private Tournament tournament;
-
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches = new ArrayList<>();
 }

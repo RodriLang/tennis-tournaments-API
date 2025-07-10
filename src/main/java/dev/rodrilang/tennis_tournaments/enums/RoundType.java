@@ -11,4 +11,6 @@ public enum RoundType {
             case FINAL -> null; // No hay más rondas
         };
     }
+
+
 }

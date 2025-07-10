@@ -28,6 +28,8 @@ public interface MatchService {
     // Obtener el ganador del partido
     Player getWinner(Match match);
 
+    boolean thereIsAWinner(Match match);
+
     PlayerResponseDto getWinner(Long matchId);
 
 }

@@ -5,7 +5,8 @@ import dev.rodrilang.tennis_tournaments.dtos.request.RoundResultsRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.request.TournamentRequestDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.PlayerResponseDto;
 import dev.rodrilang.tennis_tournaments.dtos.response.RoundResponseDto;
-import dev.rodrilang.tennis_tournaments.dtos.response.TournamentResponseDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.TournamentDetailDto;
+import dev.rodrilang.tennis_tournaments.dtos.response.TournamentListDto;
 import dev.rodrilang.tennis_tournaments.enums.RoundType;
 import dev.rodrilang.tennis_tournaments.services.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,32 +34,32 @@ public class TournamentController {
     @Operation(summary = "Crear un nuevo torneo", description = "Requiere rol ADMIN.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Torneo creado correctamente",
-                    content = @Content(schema = @Schema(implementation = TournamentResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = TournamentDetailDto.class))),
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<TournamentResponseDto> createTournament(
+    public ResponseEntity<TournamentDetailDto> createTournament(
             @RequestBody @Valid TournamentRequestDto tournamentRequestDto) {
         return ResponseEntity.ok(tournamentService.create(tournamentRequestDto));
     }
 
     @Operation(summary = "Listar todos los torneos")
     @ApiResponse(responseCode = "200", description = "Listado exitoso",
-            content = @Content(schema = @Schema(implementation = TournamentResponseDto.class)))
+            content = @Content(schema = @Schema(implementation = TournamentDetailDto.class)))
     @GetMapping
-    public ResponseEntity<List<TournamentResponseDto>> getAllTournaments() {
+    public ResponseEntity<List<TournamentListDto>> getAllTournaments() {
         return ResponseEntity.ok(tournamentService.getAll());
     }
 
     @Operation(summary = "Obtener torneo por ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Torneo encontrado",
-                    content = @Content(schema = @Schema(implementation = TournamentResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = TournamentDetailDto.class))),
             @ApiResponse(responseCode = "404", description = "Torneo no encontrado", content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<TournamentResponseDto> getTournamentById(@PathVariable Long id) {
+    public ResponseEntity<TournamentDetailDto> getTournamentById(@PathVariable Long id) {
         return ResponseEntity.ok(tournamentService.findById(id));
     }
 
@@ -182,7 +183,7 @@ public class TournamentController {
     @Operation(summary = "Actualizar información de un torneo")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<TournamentResponseDto> updateTournament(
+    public ResponseEntity<TournamentDetailDto> updateTournament(
             @PathVariable Long id,
             @RequestBody @Valid TournamentRequestDto tournamentRequestDto) {
         return ResponseEntity.ok(tournamentService.updateTournament(id, tournamentRequestDto));

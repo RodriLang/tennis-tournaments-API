@@ -10,11 +10,11 @@ import java.util.Random;
 
 import static dev.rodrilang.tennis_tournaments.validations.impl.FullScoreValidator.withoutTieBreak;
 
-public class Utils {
+public class SetScoreUtils {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final Random random = new Random();
-    private Utils() {
+    private SetScoreUtils() {
     }
 
     public static boolean isNumericString(String input) {
