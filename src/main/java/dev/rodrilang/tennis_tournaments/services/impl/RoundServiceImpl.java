@@ -72,7 +72,7 @@ public class RoundServiceImpl implements RoundService {
         round.getMatches()
                 .stream()
                 .map(matchService::getWinner)
-                .forEach(winner -> winner.setPoints(getPointsForRound(round.getType())));
+                .forEach(winner -> winner.setScore(getPointsForRound(round.getType())));
     }
 
 
