@@ -32,8 +32,8 @@ public class Player implements Comparable<Player> {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "points")
-    private Integer points;
+    @Column(name = "score")
+    private Integer score;
 
     @Column(name = "deleted")
     private Boolean deleted;
@@ -45,7 +45,7 @@ public class Player implements Comparable<Player> {
 
     @PrePersist
     public void onCreate() {
-        if (this.points == null) this.points = 0;
+        if (this.score == null) this.score = 0;
         if (this.deleted == null) this.deleted = false;
     }
 }

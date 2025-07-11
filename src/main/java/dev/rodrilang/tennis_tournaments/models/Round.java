@@ -7,8 +7,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "rounds")
+@Entity(name = "rounds")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +22,7 @@ public class Round {
     @Enumerated(EnumType.STRING)
     private RoundType type;
 
+    @Column
     private Integer givenPoints;
 
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)

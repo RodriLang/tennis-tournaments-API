@@ -39,7 +39,7 @@ public class Match implements Comparable<Match> {
     @JoinColumn(name = "round_id", nullable = false)
     private Round round;
 
-    @Column(name = "scheduled_at")
+    @Column
     private LocalDateTime scheduledAt;
 
     @PrePersist

@@ -8,14 +8,13 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.*;
 
-@Entity
-@Table(name = "tournaments")
+@Entity(name = "tournaments")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Tournament implements Comparable<Tournament> {
+public class Tournament {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +28,10 @@ public class Tournament implements Comparable<Tournament> {
     @Enumerated(EnumType.STRING)
     private SurfaceType surface;
 
-    @Column(name = "starting_date")
+    @Column
     private LocalDate startingDate;
 
-    @Column(name = "ending_date")
+    @Column
     private LocalDate endingDate;
 
     @Enumerated(EnumType.STRING)
@@ -55,8 +54,4 @@ public class Tournament implements Comparable<Tournament> {
         if(this.status == null) this.status = StatusType.NOT_STARTED;
     }
 
-    @Override
-    public int compareTo(Tournament o) {
-        return this.id.compareTo(o.getId());
-    }
 }
