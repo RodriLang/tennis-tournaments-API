@@ -1,0 +1,95 @@
+@startuml
+
+' === Packages ===
+package controller {
+  class TournamentController <<Controller>> {
+    +startTournament(id: Long)
+    +getTournament(id: Long)
+  }
+
+  class PlayerController <<Controller>> {
+    +createPlayer(PlayerDTO)
+    +getPlayer(id: Long)
+  }
+}
+
+package service {
+  class TournamentService <<Service>> {
+    +startTournament(Long)
+    +generateNextRound(Round): Round
+    +finalizeTournament(Long)
+    -validateAllMatchesCompleted(Round)
+    -assignPoints(Round)
+  }
+
+  class PlayerService <<Service>> {
+    +createPlayer(PlayerDTO)
+    +getPlayer(Long)
+    +updateScore(Player, int)
+  }
+
+  class MatchService <<Service>> {
+    +getWinner(Match): Player
+    +thereIsAWinner(Match): boolean
+  }
+
+  class RoundService <<Service>> {
+    +generateFirstRound(Set<Player>): Round
+    +generateNextRound(Round): Round
+  }
+}
+
+package entity {
+  class Tournament <<Entity>> {
+    -id: Long
+    -name: String
+    -status: StatusType
+    -startDate: LocalDate
+    -players: Set<Player>
+    -rounds: List<Round>
+  }
+
+  class Player <<Entity>> {
+    -id: Long
+    -dni: String
+    -firstName: String
+    -lastName: String
+    -score: int
+  }
+
+  class Round <<Entity>> {
+    -id: Long
+    -type: RoundType
+    -matches: List<Match>
+  }
+
+  class Match <<Entity>> {
+    -id: Long
+    -playerOne: Player
+    -playerTwo: Player
+    -result: Result
+  }
+
+  class Result <<Entity>> {
+    -setsScore: List<String>
+  }
+}
+
+'Tournament Relationships
+Tournament "1" o-- "*" Round
+Tournament "1" o-- "*" Player
+Round "1" o-- "*" Match
+Match "1" --> "1" Player : playerOne
+Match "1" --> "1" Player : playerTwo
+Match --> Result
+
+'TournamentController dependencies
+TournamentController --> TournamentService
+PlayerController --> PlayerService
+
+TournamentService --> RoundService
+TournamentService --> MatchService
+TournamentService --> PlayerService
+RoundService --> MatchService
+
+@enduml

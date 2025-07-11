@@ -1,0 +1,79 @@
+
+@startuml
+
+enum RoundType {
+  FIRST
+  QUARTER_FINAL
+  SEMI_FINAL
+  FINAL
+}
+
+enum StatusType {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum SurfaceType {
+  CARPET
+  CLAY
+  GRASS
+  HARD
+}
+
+@startuml
+
+class Tournament {
+  - id : Long
+  - name : String
+  - startDate : LocalDate
+  - status : StatusType
+  - surface : SurfaceType
+  - players : Set<Player>
+  - rounds : List<Round>
+}
+
+class Round {
+  - id : Long
+  - type : RoundType
+  - matches : List<Match>
+  - givenPoints : int
+  - tournament : Tournament
+}
+
+class Match {
+  - id : Long
+  - playerOne : Player
+  - playerTwo : Player
+  - result : Result
+  - round : Round
+}
+
+class Result {
+  - id : Long
+  - setsScore : List<SetScore>
+}
+
+class SetScore {
+  - playerOneScore : Integer
+  - playerTwoScore : Integer
+}
+
+class Player {
+  - id : Long
+  - firstName : String
+  - lastName : String
+  - dni : String
+  - score : int
+  - isActive : boolean
+}
+
+Tournament "1" o-d- "many" Player
+Tournament "1" *-u- "many" Round
+Round "1" o-r- "many" Match
+Match "1" *-l- "1" Result
+Result "1" *-u- "many" SetScore
+Match "1" --> "1" Player : playerOne
+Match "1" --> "1" Player : playerTwo
+
+@enduml
