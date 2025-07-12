@@ -46,7 +46,7 @@ public class Tournament {
     private Set<Player> players = new TreeSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "tournament_id") // Esto hace que la FK quede en Round
+    @JoinColumn(name = "tournament_id")
     private List<Round> rounds = new ArrayList<>();
 
     @PrePersist
