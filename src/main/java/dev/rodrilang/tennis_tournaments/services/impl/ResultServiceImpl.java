@@ -26,15 +26,16 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public ResultResponseDto addSetScore(Long resultId, SetScoreDto setScoreDto) {
+        Result result = this.findEntityById(resultId);
 
         SetScore setScore = setScoreMapper.toEntity(setScoreDto);
         setScoreValidator.validateSetScore(setScore);
 
-        Result result = this.findEntityById(resultId);
         result.getSetsScore().add(setScore);
 
         return resultMapper.toDto(resultRepository.save(result));
     }
+
 
     @Override
     public ResultResponseDto setFullResult(Long resultId, List<SetScoreDto> sets) {
@@ -70,34 +71,4 @@ public class ResultServiceImpl implements ResultService {
         return resultRepository.findById(resultId)
                 .orElseThrow(() -> new ResultNotFoundException(resultId));
     }
-/*
-    private void validateSetScore(Long resultId, SetScoreDto setScoreDto) {
-
-        if (result == null) {
-            throw new InvalidResultException("The result cannot be null.");
-        }
-
-        Match match = findMatchById(matchId);
-
-        // Check if the match exists
-        if (match == null) {
-            throw new MatchNotFoundException("Match not found with ID: " + matchId);
-        }
-
-        // If assigning a result, check if it already has one
-        if (isAssigning && match.getResult() != null && !match.getResult().thereIsNoWinner()) {
-            throw new InvalidTournamentStatusException("The match already has a result assigned.");
-        }
-
-        // The match must belong to the current round.
-        if (!tournament.getRounds().getLast().getMatches().contains(match)) {
-            throw new InvalidTournamentStatusException("The match belongs to a completed round.");
-        }
-
-        // The tournament must not have ended
-        if (tournament.getStatus().equals(ETournamentStatus.FINISHED)) {
-            throw new InvalidTournamentStatusException(tournament.getStatus().getMessage());
-        }
-    }
-*/
 }
