@@ -42,46 +42,27 @@
 
 ## 📁 Estructura del proyecto
 
+
+```plaintext
 src/
-
 └── main/
-
 ├── java/dev/rodrilang/tennis_tournaments/
-
 │ ├── controllers/
-
-│ ├── configs/
-
-│ ├── dtos/
-
+│ ├── configs/│ ├── dtos/
 │ ├── enums/
-
 │ ├── exceptions/
-
 │ ├── mappers/
-
 │ ├── models/
-
 │ ├── repositories/
-
 │ ├── security/
-
 │ ├── services/
-
 │ ├── strategy/
-
 │ ├── utils/
-
 │ ├── validations/
-
 │ └── TennisTournamentsApplication.java
-
 └── resources/
-
 └── application.properties
-
-
----
+```
 
 ## 📚 API Reference
 
@@ -103,15 +84,15 @@ src/
 | Método | Endpoint                                             | Descripción                           | Rol necesario
 |--------|------------------------------------------------------|---------------------------------------|---------------
 | POST   | `/tournaments`                                       | Crear torneo                          | ADMIN
-| GET    | `/tournaments`                                       | Listar torneos                        | —
-| GET    | `/tournaments/{id}`                                  | Detalle torneo                        | —
+| GET    | `/tournaments`                                       | Listar torneos                        | Autenticado
+| GET    | `/tournaments/{id}`                                  | Detalle torneo                        | Autenticado
 | PUT    | `/tournaments/{id}`                                  | Actualizar torneo                     | ADMIN
 | DELETE | `/tournaments/{id}`                                  | Eliminar torneo                       | ADMIN
 | PATCH  | `/tournaments/{id}/start`                            | Iniciar torneo                        | ADMIN / JUDGE
 | PATCH  | `/tournaments/{id}/next-round`                       | Avanzar ronda                         | ADMIN / JUDGE
-| GET    | `/tournaments/{id}/players`                          | Jugadores del torneo                  | —
-| GET    | `/tournaments/{id}/rounds`                           | Rondas del torneo                     | —
-| GET    | `/tournaments/{id}/winner`                           | Ganador del torneo                    | —
+| GET    | `/tournaments/{id}/players`                          | Jugadores del torneo                  | Autenticado
+| GET    | `/tournaments/{id}/rounds`                           | Rondas del torneo                     | Autenticado
+| GET    | `/tournaments/{id}/winner`                           | Ganador del torneo                    | Autenticado
 | POST   | `/tournaments/{id}/players/{dni}`                    | Registrar jugador                     | ADMIN
 | DELETE | `/tournaments/{id}/players/{dni}`                    | Desinscribir jugador                  | ADMIN
 | PATCH  | `/tournaments/{id}/matches/{mId}/result`             | Asignar resultado de partido          | ADMIN / JUDGE
@@ -135,10 +116,10 @@ src/
 
 | Método | Endpoint                         | Descripción                         | Rol necesario
 |--------|----------------------------------|-------------------------------------|---------------
-| GET    | `/matches`                       | Listar todos los partidos           | —
-| GET    | `/matches/{id}`                  | Detalle de un partido               | —
-| GET    | `/matches/player/{dni}`          | Partidos jugados por jugador        | —
-| GET    | `/matches/{id}/winner`           | Ganador del partido                 | —
+| GET    | `/matches`                       | Listar todos los partidos           | Autenticado
+| GET    | `/matches/{id}`                  | Detalle de un partido               | Autenticado
+| GET    | `/matches/player/{dni}`          | Partidos jugados por jugador        | Autenticado
+| GET    | `/matches/{id}/winner`           | Ganador del partido                 | Autenticado
 
 ---
 
