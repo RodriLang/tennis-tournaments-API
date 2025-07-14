@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity (name = "results")
+@Entity(name = "results")
 @Data
 public class Result {
 
@@ -14,7 +14,7 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "set_scores", joinColumns = @JoinColumn(name = "result_id"))
     private List<SetScore> setsScore = new ArrayList<>();
 

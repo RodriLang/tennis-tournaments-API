@@ -25,6 +25,6 @@ public class Round {
     @Column
     private Integer givenPoints;
 
-    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Match> matches = new ArrayList<>();
 }

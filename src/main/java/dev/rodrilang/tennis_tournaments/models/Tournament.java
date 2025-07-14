@@ -37,7 +37,7 @@ public class Tournament {
     @Enumerated(EnumType.STRING)
     private StatusType status;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tournament_players",
             joinColumns = @JoinColumn(name = "tournament_id"),
@@ -45,13 +45,13 @@ public class Tournament {
     )
     private Set<Player> players = new TreeSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "tournament_id")
     private List<Round> rounds = new ArrayList<>();
 
     @PrePersist
     public void onCreate() {
-        if(this.status == null) this.status = StatusType.NOT_STARTED;
+        if (this.status == null) this.status = StatusType.NOT_STARTED;
     }
 
 }

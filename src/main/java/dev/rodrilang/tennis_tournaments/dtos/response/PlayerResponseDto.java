@@ -17,7 +17,7 @@ public record PlayerResponseDto(
         String lastName,
 
         @Schema(description = "Puntaje acumulado del jugador", example = "1500")
-        Integer points,
+        Integer score,
 
         @Schema(description = "Fecha de nacimiento", example = "1995-06-15")
         LocalDate dateOfBirth,

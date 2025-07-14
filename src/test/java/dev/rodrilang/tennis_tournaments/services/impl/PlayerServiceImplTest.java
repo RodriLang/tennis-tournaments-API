@@ -273,7 +273,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should adjust points successfully when result is positive")
+    @DisplayName("Should adjust score successfully when result is positive")
     void adjustPoints_ShouldAdjustPointsSuccessfully_WhenResultIsPositive() {
         // Given
         int delta = 100;
@@ -293,7 +293,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should adjust points successfully when result is zero")
+    @DisplayName("Should adjust score successfully when result is zero")
     void adjustPoints_ShouldAdjustPointsSuccessfully_WhenResultIsZero() {
         // Given
         int delta = -1000;
@@ -313,7 +313,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should throw IllegalArgumentException when adjusting points results in negative score")
+    @DisplayName("Should throw IllegalArgumentException when adjusting score results in negative score")
     void adjustPoints_ShouldThrowIllegalArgumentException_WhenResultIsNegative() {
         // Given
         int delta = -1500;
@@ -330,7 +330,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should throw PlayerNotFoundException when adjusting points for non-existent player")
+    @DisplayName("Should throw PlayerNotFoundException when adjusting score for non-existent player")
     void adjustPoints_ShouldThrowPlayerNotFoundException_WhenPlayerNotFound() {
         // Given
         when(playerRepository.findByDniAndDeleted(DNI, false)).thenReturn(Optional.empty());
