@@ -43,23 +43,41 @@
 ## 📁 Estructura del proyecto
 
 src/
+
 └── main/
+
 ├── java/dev/rodrilang/tennis_tournaments/
+
 │ ├── controllers/
+
 │ ├── configs/
+
 │ ├── dtos/
+
 │ ├── enums/
+
 │ ├── exceptions/
+
 │ ├── mappers/
+
 │ ├── models/
+
 │ ├── repositories/
+
 │ ├── security/
+
 │ ├── services/
+
 │ ├── strategy/
+
 │ ├── utils/
+
 │ ├── validations/
+
 │ └── TennisTournamentsApplication.java
+
 └── resources/
+
 └── application.properties
 
 
