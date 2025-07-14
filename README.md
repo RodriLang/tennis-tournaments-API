@@ -42,7 +42,6 @@
 
 ## 📁 Estructura del proyecto
 
-
 ```plaintext
 src/
 └── main/
